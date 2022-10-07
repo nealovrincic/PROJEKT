@@ -96,3 +96,5 @@ def tekstovni_vmesnik():
     while True:
         izpisi_trenutno_stanje()
         ponudi_moznosti()
+
+tekstovni_vmesnik()
