@@ -82,8 +82,8 @@ class Vaja:
     def iz_slovarja(slovar):
         return Vaja(
             slovar["ime"],
-            slovar["teža"]
-            slovar["število ponovitev"]
-            slovar["število setov"]
+            slovar["teža"],
+            slovar["število ponovitev"],
+            slovar["število setov"],
             slovar["opravljeno"],
         )
