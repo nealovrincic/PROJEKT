@@ -1,0 +1,7 @@
+<h1>Dobrodosel!</h1>
+
+Tu je tvoj seznam:
+<ul>
+    <li>Vaja 1</li>
+    <li>Vaja 2</li>
+</ul>
