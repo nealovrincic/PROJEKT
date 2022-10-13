@@ -22,21 +22,22 @@ class Stanje:
         return stanje
 
     def dodaj_nov_teden(self):
-        ponedeljkove_vaje = [Vaja("squat", 40, 12, 3), Vaja("deadlift", 50, 12, 4)]
+        ponedeljkove_vaje = []
         ponedeljek = Dan_v_tednu("ponedeljek", ponedeljkove_vaje)
-        torkove_vaje = [Vaja("pull up", 40, 12, 3), Vaja("bench dips", 50, 12, 4)]
+        torkove_vaje = []
         torek = Dan_v_tednu("torek", torkove_vaje)
-        sredine_vaje = [Vaja("squat", 40, 12, 3), Vaja("deadlift", 50, 12, 4)]
+        sredine_vaje = []
         sreda = Dan_v_tednu("sreda", sredine_vaje)
-        cetrtkove_vaje = [Vaja("pull up", 40, 12, 3), Vaja("bench dips", 50, 12, 4)]
+        cetrtkove_vaje = []
         cetrtek = Dan_v_tednu("cetrtek", cetrtkove_vaje)
-        petkove_vaje = [Vaja("squat", 40, 12, 3), Vaja("deadlift", 50, 12, 4)]
+        petkove_vaje = []
         petek = Dan_v_tednu("petek", petkove_vaje)
-        sobotine_vaje = [Vaja("pull up", 40, 12, 3), Vaja("bench dips", 50, 12, 4)]
+        sobotine_vaje = []
         sobota = Dan_v_tednu("sobota", sobotine_vaje)
-        nedeljine_vaje = [Vaja("squat", 40, 12, 3), Vaja("deadlift", 50, 12, 4)]
-        nedelja = Dan_v_tednu("ponedeljek", nedeljine_vaje)
+        nedeljine_vaje = []
+        nedelja = Dan_v_tednu("nedelja", nedeljine_vaje)
         self.dnevi_v_tednu = [ponedeljek, torek, sreda, cetrtek, petek, sobota, nedelja]
+
 
     def shrani_v_datoteko(self, ime_datoteke):
         with open(ime_datoteke, "w") as dat:
@@ -107,24 +108,3 @@ class Vaja:
             slovar["opravljeno"],
         )
 
-class Rekordi:
-    def __init__(self, rekordi):
-        self.rekordi = rekordi
-
-    def dodaj_rekord(self, ime_vaje, teza):
-        if ime_vaje in self.rekordi:
-            if teza > self.rekordi[ime_vaje]:
-                self.rekordi[ime_vaje] = teza
-        else:
-            self.rekordi[ime_vaje] = teza
-
-
-    def shrani_v_datoteko(self, ime_datoteke):
-        with open(ime_datoteke, "w") as dat:
-            json.dump(self.rekordi, dat, indent=4, ensure_ascii=False)
-
-    @staticmethod
-    def preberi_iz_datoteke(ime_datoteke):
-        with open(ime_datoteke) as dat:
-            slovar = json.load(dat)
-            return Rekordi(slovar)
