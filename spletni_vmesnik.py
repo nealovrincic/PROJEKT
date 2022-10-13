@@ -1,5 +1,7 @@
 import bottle
 from model import Stanje, Vaja
+from rekordi import Rekordi
+
 
 SIFRIRNI_KLJUC = "To je poseben šifrirni ključ"
 
@@ -8,6 +10,12 @@ try:
     stanje = Stanje.preberi_iz_datoteke(IME_DATOTEKE)
 except FileNotFoundError:
     stanje = Stanje(dnevi_v_tednu=[])
+
+IME_DATOTEKE_REKORDI = "rekordi.json"
+try:
+    rekordi = Rekordi.preberi_iz_datoteke(IME_DATOTEKE_REKORDI)
+except FileNotFoundError:
+    rekordi = Rekordi({})
 
 def ime_uporabnikove_datoteke(uporabnisko_ime):
     return f"stanja_uporabnikov/{uporabnisko_ime}.json"
@@ -31,11 +39,15 @@ def shrani_stanje_trenutnega_uporabnika(stanje):
     ime_datoteke = ime_uporabnikove_datoteke(uporabnisko_ime)
     stanje.shrani_v_datoteko(ime_datoteke)
 
+@bottle.get("/registracija/")
+def naslovna_stran_get():
+    return bottle.template("registracija.html")
+
+@bottle.post("/registracija/")
+
 @bottle.get("/prijava/")
-def prijava_get():
-    return bottle.template(
-        "prijava.tpl"
-    )
+def prijava():
+    return bottle.template("prijava.html")
 
 @bottle.post("/prijava/")
 def prijava_post():
@@ -44,34 +56,41 @@ def prijava_post():
     uporabnisko_ime = bottle.request.forms.getunicode("uporabnisko_ime")
     geslo = bottle.request.forms.getunicode("geslo")
     bottle.response.set_cookie("uporabnisko_ime", uporabnisko_ime, path="/", secret=SIFRIRNI_KLJUC)
-    bottle.redirect("/")
+    bottle.redirect("/zacetna_stran/")
 
 @bottle.post("/odjava/")
 def odjava_post():
     bottle.response.delete_cookie("uporabnisko_ime", path="/")
-    bottle.redirect("/")
+    bottle.redirect("/naslovna_stran/")
 
 
-@bottle.get("/")
+@bottle.get("/naslovna_stran/")
+def naslovna_stran_get():
+    return bottle.template("naslovna_stran.html")
+
+@bottle.get("/rekordi/")
+def rekordi_get():
+    return bottle.template("rekordi.html")
+
+@bottle.get("/treningi/")
+def naslovna_stran_get():
+    return bottle.template("treningi.html")
+
+@bottle.get("/zacetna_stran/")
 def zacetna_stran():
-    stanje = stanje_trenutnega_uporabnika()
     return bottle.template(
-        "zacetna_stran.html",
-        dnevi_v_tednu=stanje.dnevi_v_tednu,
+        "zacetna_stran.html"
     )
 
 def url_dneva(id_dneva):
-    return f"/kategorija/{id_dneva}/"
+    return f"/dan/{id_dneva}/"
 
 @bottle.get("/dan/<id_dneva:int>/")
 def prikazi_dan(id_dneva):
     stanje = stanje_trenutnega_uporabnika()
     dan = stanje.dnevi_v_tednu[id_dneva]
     return bottle.template(
-        "dan.html",
-        dnevi_v_tednu=stanje.dnevi_v_tednu,
-        aktualen_dan=dan,
-        id_aktualnega_dneva=id_dneva,
+        "dan.html"
     )
 
 @bottle.post("/opravi/<id_dneva:int>/<id_vaje:int>/")
