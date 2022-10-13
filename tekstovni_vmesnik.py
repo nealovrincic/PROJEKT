@@ -1,10 +1,17 @@
 from model import Stanje, Dan_v_tednu, Vaja
+from rekordi import Rekordi
 
 IME_DATOTEKE = "stanje.json"
 try:
     stanje = Stanje.preberi_iz_datoteke(IME_DATOTEKE)
 except FileNotFoundError:
     stanje = Stanje(dnevi_v_tednu=[])
+
+IME_DATOTEKE_REKORDI = "rekordi.json"
+try:
+    rekordi = Rekordi.preberi_iz_datoteke(IME_DATOTEKE_REKORDI)
+except FileNotFoundError:
+    rekordi = Rekordi({})
 
 def preberi_stevilo():
     while True:
@@ -50,12 +57,13 @@ def izberi_dan(stanje):
 def izberi_vajo(dan):
     print("Izberite opravilo:")
     return izberi_moznost(
-        [(vaja, prikaz_vaje(vaja)) for vaja in dan.opravila]
+        [(vaja, prikaz_vaje(vaja)) for vaja in dan.vaje]
     )
 
 def izpisi_trenutno_stanje():
     for dan in stanje.dnevi_v_tednu:
-        print (f"{dan.ime_vaje}: {dan.stevilo_neopravljenih()} neopravljenih")
+        print (f"{dan.ime}: {dan.stevilo_neopravljenih()} neopravljenih")
+    izpisi_rekorde()
 
 def zacetni_pozdrav():
     print ("Pozdravljeni v programu za vodenje treningov in osebnih rekordov!")
@@ -74,9 +82,18 @@ def opravi_vajo():
     dan = izberi_dan(stanje)
     vaja = izberi_vajo(dan)
     vaja.opravi()
+    rekordi.dodaj_rekord(ime_vaje=vaja.ime, teza=vaja.teza)
+    izpisi_rekorde()
+
+def izpisi_rekorde():
+    for vaja in rekordi.rekordi:
+        print (f"{vaja}: {rekordi.rekordi[vaja]}")
+
 
 def zakljuci_izvajanje():
     stanje.shrani_v_datoteko(IME_DATOTEKE)
+    rekordi.shrani_v_datoteko(IME_DATOTEKE_REKORDI)
+    izpisi_rekorde()
     print("Nasvidenje!")
     exit()
 
