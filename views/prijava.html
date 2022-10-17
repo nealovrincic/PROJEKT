@@ -1,28 +1,17 @@
 <!DOCTYPE html>
 % rebase('main.html')
-<form method="POST">
+<h1>Prijava</h1>
+
+<form method="POST" style="margin: auto; width: 250px; padding-top: 50px;">
+        <label class="label is-large" >Uporabniško ime</label>
+            <input class="input is-medium" name="uporabnisko_ime" type="text" placeholder="uporabniško ime" required>
     <div class="field">
-        <label class="label">Uporabniško ime</label>
-        <div class="control has-icons-left">
-            <input class="input" name="uporabnisko_ime" type="text" placeholder="uporabniško ime">
-            <span class="icon is-small is-left">
-                <i class="fas fa-user"></i>
-            </span>
-        </div>
-        
-    </div>
-    <div class="field">
-        <label class="label">Geslo</label>
-        <div class="control has-icons-left">
-            <input class="input" name="geslo" type="password" placeholder="geslo">
-            <span class="icon is-small is-left">
-                <i class="fas fa-lock"></i>
-            </span>
-        </div>
+        <label class="label is-large">Geslo</label>
+            <input class="input is-medium" name="geslo" type="password" placeholder="geslo" size="20" required>
     </div>
     <div class="field is-grouped">
         <div class="control">
-            <button class="button is-link">Prijavi se</button>
+            <button class="button is-danger is-large">Prijavi se</button>
         </div>
     </div>
 </form>

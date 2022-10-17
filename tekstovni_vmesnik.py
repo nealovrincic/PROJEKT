@@ -84,6 +84,11 @@ def opravi_vajo():
     vaja.opravi()
     rekordi.dodaj_rekord(ime_vaje=vaja.ime, teza=vaja.teza)
     izpisi_rekorde()
+    
+def izbrisi_vajo():
+    dan = izberi_dan(stanje)
+    vaja = izberi_vajo(dan)
+    vaja.izbrisi()
 
 def izpisi_rekorde():
     for vaja in rekordi.rekordi:

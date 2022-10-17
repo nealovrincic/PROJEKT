@@ -1,0 +1,35 @@
+{
+    "dnevi": [
+        {
+            "ime": "ponedeljek",
+            "vaje": []
+        },
+        {
+            "ime": "torek",
+            "vaje": []
+        },
+        {
+            "ime": "sreda",
+            "vaje": []
+        },
+        {
+            "ime": "cetrtek",
+            "vaje": []
+        },
+        {
+            "ime": "petek",
+            "vaje": []
+        },
+        {
+            "ime": "sobota",
+            "vaje": []
+        },
+        {
+            "ime": "nedelja",
+            "vaje": []
+        }
+    ],
+    "rekordi": {
+        
+    }
+}

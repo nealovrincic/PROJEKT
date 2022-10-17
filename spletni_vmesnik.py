@@ -5,17 +5,10 @@ from rekordi import Rekordi
 
 SIFRIRNI_KLJUC = "To je poseben šifrirni ključ"
 
-IME_DATOTEKE = "stanje.json"
-try:
-    stanje = Stanje.preberi_iz_datoteke(IME_DATOTEKE)
-except FileNotFoundError:
-    stanje = Stanje(dnevi_v_tednu=[])
 
-IME_DATOTEKE_REKORDI = "rekordi.json"
-try:
-    rekordi = Rekordi.preberi_iz_datoteke(IME_DATOTEKE_REKORDI)
-except FileNotFoundError:
-    rekordi = Rekordi({})
+vse_vaje = ["squat", "deadlift", "hip thrust", "split squat", "cable kickbacks", "leg curls", "leg press", "lunges", "leg extensions",
+    "pull up", "push ups", "single arm rows", "bench press", "hammer curls" ]
+
 
 def ime_uporabnikove_datoteke(uporabnisko_ime):
     return f"stanja_uporabnikov/{uporabnisko_ime}.json"
@@ -39,11 +32,13 @@ def shrani_stanje_trenutnega_uporabnika(stanje):
     ime_datoteke = ime_uporabnikove_datoteke(uporabnisko_ime)
     stanje.shrani_v_datoteko(ime_datoteke)
 
-@bottle.get("/registracija/")
-def naslovna_stran_get():
-    return bottle.template("registracija.html")
+@bottle.get("/")
+def odprtje_strani():
+    bottle.redirect("/naslovna_stran/")
 
-@bottle.post("/registracija/")
+@bottle.get("/naslovna_stran/")
+def naslovna_stran_get():
+    return bottle.template("naslovna_stran.html")
 
 @bottle.get("/prijava/")
 def prijava():
@@ -51,36 +46,35 @@ def prijava():
 
 @bottle.post("/prijava/")
 def prijava_post():
-    ime = bottle.request.forms.getunicode("ime")
-    priimek = bottle.request.forms.getunicode("priimek")
     uporabnisko_ime = bottle.request.forms.getunicode("uporabnisko_ime")
     geslo = bottle.request.forms.getunicode("geslo")
-    bottle.response.set_cookie("uporabnisko_ime", uporabnisko_ime, path="/", secret=SIFRIRNI_KLJUC)
-    bottle.redirect("/zacetna_stran/")
+    if geslo == uporabnisko_ime + "123":
+        bottle.response.set_cookie("uporabnisko_ime", uporabnisko_ime, path="/", secret=SIFRIRNI_KLJUC)
+        bottle.redirect("/zacetna_stran/")
+    else:
+        return "Napaka ob prijavi, geslo naj bo oblike uporabnisko_ime123"
 
 @bottle.post("/odjava/")
 def odjava_post():
     bottle.response.delete_cookie("uporabnisko_ime", path="/")
     bottle.redirect("/naslovna_stran/")
 
-
-@bottle.get("/naslovna_stran/")
-def naslovna_stran_get():
-    return bottle.template("naslovna_stran.html")
-
 @bottle.get("/rekordi/")
 def rekordi_get():
-    return bottle.template("rekordi.html")
+    stanje=stanje_trenutnega_uporabnika()
+    return bottle.template("rekordi.html",
+    rekordi=stanje.rekordi.rekordi)
 
 @bottle.get("/treningi/")
 def naslovna_stran_get():
-    return bottle.template("treningi.html")
+    stanje = stanje_trenutnega_uporabnika()
+    return bottle.template("treningi.html", 
+    dnevi_v_tednu=stanje.dnevi_v_tednu)
 
 @bottle.get("/zacetna_stran/")
 def zacetna_stran():
     return bottle.template(
-        "zacetna_stran.html"
-    )
+        "zacetna_stran.html")
 
 def url_dneva(id_dneva):
     return f"/dan/{id_dneva}/"
@@ -90,8 +84,24 @@ def prikazi_dan(id_dneva):
     stanje = stanje_trenutnega_uporabnika()
     dan = stanje.dnevi_v_tednu[id_dneva]
     return bottle.template(
-        "dan.html"
-    )
+        "dan.html",
+        dnevi_v_tednu = stanje.dnevi_v_tednu,
+        aktualen_dan = dan,
+        id_aktualnega_dneva = id_dneva,
+        vse_vaje = vse_vaje)
+
+@bottle.post("/dan/<id_dneva:int>/")
+def dodaj_vajo(id_dneva):
+    stanje = stanje_trenutnega_uporabnika()
+    dan = stanje.dnevi_v_tednu[id_dneva]
+    ime_vaje = bottle.request.forms.get("ime vaje")
+    teza = bottle.request.forms.get("teza")
+    st_ponovitev = bottle.request.forms.get("stevilo ponovitev")
+    st_setov = bottle.request.forms.get("stevilo setov")
+    vaja = Vaja(ime_vaje, teza, st_ponovitev, st_setov)
+    dan.dodaj_vajo(vaja)
+    shrani_stanje_trenutnega_uporabnika(stanje)
+    bottle.redirect(url_dneva(id_dneva))
 
 @bottle.post("/opravi/<id_dneva:int>/<id_vaje:int>/")
 def opravi(id_dneva, id_vaje):
@@ -99,19 +109,15 @@ def opravi(id_dneva, id_vaje):
     dan = stanje.dnevi_v_tednu[id_dneva]
     vaja = dan.vaje[id_vaje]
     vaja.opravi()
+    stanje.rekordi.dodaj_rekord(vaja.ime,vaja.teza)
     shrani_stanje_trenutnega_uporabnika(stanje)
     bottle.redirect(url_dneva(id_dneva))
 
-@bottle.post("/dodaj-vajo/<id_dneva:int>/")
-def dodaj_vajo(id_dneva):
+@bottle.post("/izbrisi/<id_dneva:int>/<id_vaje:int>/")
+def izbrisi_vajo(id_dneva, id_vaje):
     stanje = stanje_trenutnega_uporabnika()
     dan = stanje.dnevi_v_tednu[id_dneva]
-    ime_vaje = bottle.request.forms.getunicode("ime vaje")
-    teza = bottle.request.forms.getunicode("teža")
-    st_ponovitev = bottle.request.forms.getunicode("število ponovitev")
-    st_setov = bottle.request.forms.getunicode("število setov")
-    vaja = Vaja(ime_vaje, teza, st_ponovitev, st_setov)
-    dan.dodaj_vajo(vaja)
+    dan.izbrisi_vajo(id_vaje)
     shrani_stanje_trenutnega_uporabnika(stanje)
     bottle.redirect(url_dneva(id_dneva))
 

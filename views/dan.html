@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+% rebase("main.html")
+
+
+<h1>
+    <strong>TRENING TRACKER</strong>
+</h1>
+
+<h2>Treningi</h2>
+
+
+<a style="color:hsl(348, 100%, 61%); padding:20px" href="http://127.0.0.1:8080/zacetna_stran/">Nazaj</a>
+
+<nav class="level" style="padding-left: 20px; padding-top: 20px">
+    <div class="control">
+        <div class="buttons field is-centered is-horizontal">
+            % for id_dneva, dan in enumerate(dnevi_v_tednu):
+            % if dan == aktualen_dan:
+            <a class="button is-danger is-light is-selected is-medium" name="id_dneva" value="{{id_dneva}}">
+                {{dan.ime}}
+                <span class="tag is-rounded is-danger" style="margin:10px;">{{dan.stevilo_neopravljenih()}}</span>
+            </a>
+            % else:
+            <a href="/dan/{{id_dneva}}/" class="button is-medium is-danger is-outlined" name="id_dneva" value="{{id_dneva}}">
+                {{dan.ime}}
+                <span class="tag is-rounded" style="margin:10px;">{{dan.stevilo_neopravljenih()}}</span>
+            </a>
+            % end
+            % end
+        </div>
+    </div>    
+</nav>
+
+
+<table class="table is-hoverable is-fullwidth">
+    <thead>
+        <td> <strong>Opravljeno</strong> </td>
+        <td> <strong>Ime vaje</strong></td>
+        <td> <strong>Teža v kg</strong></td>
+        <td> <strong>Število ponovitev</strong> </td>
+        <td> <strong>Število setov</strong></td>
+    </thead>
+    <tbody>
+        % for id_vaje, vaja in enumerate(aktualen_dan.vaje):
+        <tr>
+            <td>
+                <form method="POST" action="/opravi/{{id_aktualnega_dneva}}/{{id_vaje}}/">
+                    <button class="button is-white">
+                        <span class="icon is-large">
+                            % if vaja.opravljeno:
+                            <input type="checkbox" checked="true">
+                            % else:
+                            <input type="checkbox">
+                            % end
+                        </span>
+                    </button>
+                </form>
+            </td>
+            <td>{{ vaja.ime }}</td>
+            <td>{{ vaja.teza }} kg</td>
+            <td>{{ vaja.st_ponovitev }}</td>
+            <td>{{ vaja.st_setov }}</td>
+            <td> <form method="POST" action="/izbrisi/{{id_aktualnega_dneva}}/{{id_vaje}}/">
+                <input class="input is-normal" type="submit" value="Izbriši" style="border-color:hsl(348, 100%, 61%); color: hsl(348, 100%, 61%);">
+                </form>
+            </td>
+        </tr>
+        % end
+        <form method="POST">
+            <tr>
+                <td></td>
+                <td> 
+                    % include('_imena_vaj.html', vse_vaje=vse_vaje, name="ime vaje")
+                </td>
+                <td> 
+                    <input class="input is-normal" type="number" name="teza" min="0" step="5" value="5"></td>
+                <td><input class="input is-normal" type="number" name="stevilo ponovitev" min="0" step="1" value="10"></td>
+                <td> <input class="input is-normal" type="number" name="stevilo setov" min="0" step="1" value="3"> </td>
+                <td> <input class="input is-normal" type="submit" value="Dodaj" style="border-color:hsl(348, 100%, 61%); color: hsl(348, 100%, 61%);"></td>
+                </tr>
+        </form>
+    </tbody>
+</table>
+
+
+

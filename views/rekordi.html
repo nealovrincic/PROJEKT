@@ -4,5 +4,25 @@
     Rekordi
 </h1>
 
-<a style="color:red; padding:20px" href="http://127.0.0.1:8080/zacetna_stran/">Nazaj</a>
+<a style="color:hsl(348, 100%, 61%);; padding:20px" href="http://127.0.0.1:8080/zacetna_stran/">Nazaj</a>
 
+<table class="table is-hoverable is-fullwidth" style="text-align:center;">
+    <tbody>
+        <tr>
+            % for ime_vaje in rekordi:
+            <td style="padding-top: 270px;">
+                <button class="button  is-rounded is-danger is-large" style="text-align: center;">
+                    {{ rekordi[ime_vaje] }}
+                </button> 
+            </td>
+            % end
+        </tr>
+        <tr>
+            % for ime_vaje in rekordi:
+            <td>
+                <strong>{{ ime_vaje }}</strong>
+            </td>
+            % end
+        </tr>
+    </tbody>
+</table>

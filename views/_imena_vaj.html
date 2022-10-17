@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<!--spustni seznam v html dan-->
+<div class="control">
+    <div class="select is-normal">
+      <select name="{{name}}">
+        % for id_vaje, vaja in enumerate(vse_vaje):
+        <option value="{{vaja}}">
+          {{vaja}}
+        </option>
+        % end
+      </select>
+    </div>
+  </div>
+

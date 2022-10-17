@@ -1,0 +1,52 @@
+{
+    "dnevi": [
+        {
+            "ime": "ponedeljek",
+            "vaje": [
+                {
+                    "ime": "split squat",
+                    "teza": "15",
+                    "stevilo ponovitev": "10",
+                    "stevilo setov": "3",
+                    "opravljeno": true
+                },
+                {
+                    "ime": "squat",
+                    "teza": "60",
+                    "stevilo ponovitev": "8",
+                    "stevilo setov": "3",
+                    "opravljeno": true
+                }
+            ]
+        },
+        {
+            "ime": "torek",
+            "vaje": []
+        },
+        {
+            "ime": "sreda",
+            "vaje": []
+        },
+        {
+            "ime": "cetrtek",
+            "vaje": []
+        },
+        {
+            "ime": "petek",
+            "vaje": []
+        },
+        {
+            "ime": "sobota",
+            "vaje": []
+        },
+        {
+            "ime": "nedelja",
+            "vaje": []
+        }
+    ],
+    "rekordi": {
+        "squat": "60",
+        "deadlift": 0,
+        "bench press": 0
+    }
+}
